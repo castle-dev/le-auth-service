@@ -1,0 +1,21 @@
+language: node_js
+before_install:
+  - npm install -g gulp mocha
+  - npm install
+  - npm test
+install:
+  - 'git config --global user.email "travis-ci@entercastle.com"'
+  - 'git config --global user.name "Travis Castle"'
+script:
+  - gulp docs
+  - cd docs
+  - git init
+  - 'git remote add origin "https://${GH_TOKEN}@github.com/castle-dev/le-auth-service.git"'
+  - git checkout -B gh-pages
+  - git add .
+  - 'git commit -m "Updating documentation"'
+  - 'git push origin gh-pages -fq > /dev/null'
+env:
+  global:
+    - ENVIRONMENT=staging
+    - secure: WFGUUP/94Sf0xiWj9szssHIJZhOx2AdkZtDIUHiNLV7H3tmoyFeNU4hID/VwFs6JNFCCmCoXmNYGnquZcyw+cDbbiYJxMjoBptaOOSsHZE6//90SqFcL4/EJQnRyPGAK0SBB0lfQExONdxMN6SeGd9RvKvcctqTNtrRpB5S0nout3w1iGxBBasQR1Rq2zyYCVwz5BmhA5SSvDQopF6oHZSEKMxEWTZ8U124hHSW8q1yrYw/hDidg309hTHFjoKBHU/wrarYT7OSEGHKIFfW3fBHDHoimTsDtAmS2XJMtxaGg8015LfmmF22y8nDmpFaug6VAwEDGP7CBP8MgVGGaHgfV6wje2qh5QC18zBF5P0YY3w2T3RKA0bWhZ84Nqdg4tFucyNSJgqcO8y1b1ixK5mvvGvpPOeIhWQTgxkSswwkFmkNEMshIjnBJhUakLqn5QHBLwgjz+THN6YJFKiEzmkZc8HSCfeLaLAqpnAXAAyK8EF95XFpEbT8QJOXkp5oPhmVEtT9QivCmBXZrOtZYN0QyHnvqq5CfANtpe3YzvBiltHvLAieUKkn8Tvyby11bLMd6VmSzMDM1IkJveaPiWcswNa7sbOjupBr6LRHLWPOZU9qtV+4KuUXoSGrxUA8yN6jtqi+GGd+HVEhlFosutah5F226m8uQ2QEuHk/24v4=
