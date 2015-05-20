@@ -6,10 +6,11 @@ var AuthService = function (provider, storage) {
   var _provider = provider;
   var _storage = storage;
   var _authedUser;
-  this.create = function (email, password) {
+
+  this.createUser = function (email, password) {
     if (!email) { return q.reject(new Error('Email required')); }
     if (!password) { return q.reject(new Error('Password required')); }
-    return _provider.create(email, password)
+    return _provider.createUser(email, password)
     .then(function (id) {
       var _user = storage.createRecord('user', id);
       return _user.update({});

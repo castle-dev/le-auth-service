@@ -10,7 +10,7 @@ chai.use(chaiAsPromised);
 
 var uid = '1';
 var mockProvider = {
-  create: function () { return q.resolve(uid); },
+  createUser: function () { return q.resolve(uid); },
   loginWithEmail: function () { return q.resolve(); },
   loginWithToken: function () { return q.resolve(); },
   logout: function () { return true; },
@@ -27,7 +27,7 @@ var mockStorageService = {
   },
 }
 describe('AuthService', function () {
-  var user = new AuthService(mockProvider, mockStorageService);
+  var auth = new AuthService(mockProvider, mockStorageService);
   var email = 'test.user@entercastle.com';
   var password = 'fakepassword1';
   var token = 'abc123';
@@ -39,53 +39,53 @@ describe('AuthService', function () {
     expect(function () { new AuthService(); }).to.throw('Authentication provider required');
   });
   it('should create new users', function () {
-    var promise = user.create(email, password);
+    var promise = auth.createUser(email, password);
     return expect(promise).to.eventually.be.fulfilled;
   });
   it('should require email to create new users', function () {
-    var promise = user.create();
+    var promise = auth.createUser();
     return expect(promise).to.eventually.be.rejectedWith('Email required');
   });
   it('should require password to create new users', function () {
-    var promise = user.create(email);
+    var promise = auth.createUser(email);
     return expect(promise).to.eventually.be.rejectedWith('Password required');
   });
   it('should log users in', function () {
-    var promise = user.loginWithEmail(email, password);
+    var promise = auth.loginWithEmail(email, password);
     return expect(promise).to.eventually.be.fulfilled;
   });
   it('should log robots in', function () {
-    var promise = user.loginWithToken(token);
+    var promise = auth.loginWithToken(token);
     return expect(promise).to.eventually.be.fulfilled;
   });
   it('should require email to log users in', function () {
-    var promise = user.loginWithEmail();
+    var promise = auth.loginWithEmail();
     return expect(promise).to.eventually.be.rejectedWith('Email required');
   });
   it('should require password to login users in', function () {
-    var promise = user.loginWithEmail(email);
+    var promise = auth.loginWithEmail(email);
     return expect(promise).to.eventually.be.rejectedWith('Password required');
   });
   it('should log users out', function () {
     var spy = sinon.spy(mockProvider, 'logout');
-    expect(user.logout()).to.be.true;
+    expect(auth.logout()).to.be.true;
     expect(spy).to.have.been.called;
   });
   it('should check if users are logged in', function () {
     var spy = sinon.spy(mockProvider, 'isAuthenticated');
-    expect(user.isAuthenticated()).to.be.true;
+    expect(auth.isAuthenticated()).to.be.true;
     expect(spy).to.have.been.called;
   });
   it('should allow users to request password resets', function () {
-    var promise = user.requestPasswordReset(email);
+    var promise = auth.requestPasswordReset(email);
     return expect(promise).to.eventually.be.fulfilled;
   });
   it('should require email for password reset requests', function () {
-    var promise = user.requestPasswordReset();
+    var promise = auth.requestPasswordReset();
     return expect(promise).to.eventually.be.rejected;
   });
   it('should allow users to reset passwords', function () {
-    var promise = user.resetPassword(email, password, 'newpassword');
+    var promise = auth.resetPassword(email, password, 'newpassword');
     return expect(promise).to.eventually.be.fulfilled;
   });
 });
