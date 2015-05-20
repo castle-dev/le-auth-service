@@ -10,7 +10,15 @@ le-auth-service
 ## Usage
 
 ```
-  //TODO
+  var storage = /* initialize storage service */
+  var provider = /* initialize auth provider (such as le-auth-provider-firebase) */
+  var AuthService = require('le-auth-service');
+  var auth = new AuthService(provider, storage);
+
+  auth.createUser('user@email.com', 'abc123');
+  .then(function (record) {
+    ...
+  });
 ```
 
 ## Tests
