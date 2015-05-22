@@ -52,7 +52,7 @@ var AuthService = function (provider, storage) {
   };
   /**
    * Logs a user in, given an access token
-   * @function loginWithEmail
+   * @function loginWithToken
    * @memberof AuthService
    * @instance
    * @param {string} token the user's access token (such as a secret key)
