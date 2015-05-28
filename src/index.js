@@ -3,15 +3,11 @@ var q = require('q');
  * A tool for authenticating users
  * @class AuthService
  * @param {AuthProvider} provider the auth provider which this service delegates to
- * @param {StorageService} storage an instance of le-storage-service that is used to create records
  * @returns {service}
  */
-var AuthService = function (provider, storage) {
+var AuthService = function (provider) {
   if (!provider) { throw new Error('Authentication provider required'); }
-  if (!storage) { throw new Error('Storage service required'); }
   var _provider = provider;
-  var _storage = storage;
-  var _authedUser;
   /**
    * Creates a new user
    * @function createUser
@@ -21,16 +17,11 @@ var AuthService = function (provider, storage) {
    * @param {string} password the new user's password
    * @returns {promise} resolves with the newly created user record
    */
-  this.createUser = function (email, password) {
+  this.createUser = function (email, password, roles) {
     if (!email) { return q.reject(new Error('Email required')); }
     if (!password) { return q.reject(new Error('Password required')); }
-    var _user;
-    return _provider.createUser(email, password)
-    .then(function (id) {
-      _user = storage.createRecord('user', id);
-      return _user.update({});
-    })
-    .then(function () { return _user });
+    if (!roles) { return q.reject(new Error('Roles array required')); }
+    return _provider.createUser(email, password, roles);
   };
   /**
    * Logs a user in, given their email and password
@@ -44,11 +35,7 @@ var AuthService = function (provider, storage) {
   this.loginWithEmail = function (email, password) {
     if (!email) { return q.reject(new Error('Email required')); }
     if (!password) { return q.reject(new Error('Password required')); }
-    return _provider.loginWithEmail(email, password)
-    .then(function (id) {
-      _authedUser = storage.createRecord('user', id);
-    })
-    .then(function () { return _authedUser });
+    return _provider.loginWithEmail(email, password);
   };
   /**
    * Logs a user in, given an access token
@@ -79,7 +66,6 @@ var AuthService = function (provider, storage) {
    * @instance
    */
   this.logout = function () {
-    _authedUser = false;
     return _provider.logout();
   };
   /**

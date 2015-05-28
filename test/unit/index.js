@@ -18,18 +18,11 @@ var mockProvider = {
   requestPasswordReset: function () { return q.resolve(); },
   resetPassword: function () { return q.resolve(); }
 }
-var mockStorageService = {
-  createRecord: function () {
-    return {
-      update: function () { return q.resolve(); },
-      getID: function () { return uid; }
-    }
-  },
-}
 describe('AuthService', function () {
-  var auth = new AuthService(mockProvider, mockStorageService);
+  var auth = new AuthService(mockProvider);
   var email = 'test.user@entercastle.com';
   var password = 'fakepassword1';
+  var roles = ['cat', 'boat']
   var token = 'abc123';
   it('should respect logic', function () {
     expect(true).to.be.true;
@@ -39,7 +32,7 @@ describe('AuthService', function () {
     expect(function () { new AuthService(); }).to.throw('Authentication provider required');
   });
   it('should create new users', function () {
-    var promise = auth.createUser(email, password);
+    var promise = auth.createUser(email, password, roles);
     return expect(promise).to.eventually.be.fulfilled;
   });
   it('should require email to create new users', function () {
@@ -49,6 +42,10 @@ describe('AuthService', function () {
   it('should require password to create new users', function () {
     var promise = auth.createUser(email);
     return expect(promise).to.eventually.be.rejectedWith('Password required');
+  });
+  it('should require roles to create new users', function () {
+    var promise = auth.createUser(email, password);
+    return expect(promise).to.eventually.be.rejectedWith('Roles array required');
   });
   it('should log users in', function () {
     var promise = auth.loginWithEmail(email, password);
