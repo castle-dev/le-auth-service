@@ -51,9 +51,38 @@ describe('Auth Service', function () {
   it('should remember that users are authenticated', function () {
     expect(auth.isAuthenticated()).to.be.true;
   });
+  it('should load the authed user record', function () {
+    var promise = auth.getAuthedUser().load();
+    return expect(promise).to.eventually.be.fulfilled;
+  });
+  it('should know the user is an owner', function () {
+    var promise = auth.authedUserHasRole('owner');
+    return expect(promise).to.eventually.be.fulfilled;
+  });
+  it('should know the user is not a tenant', function () {
+    var promise = auth.authedUserHasRole('tenant');
+    return expect(promise).to.eventually.be.rejected;
+  });
+  it('should load the authed user\'s role records', function () {
+    var promise = auth.getAuthedUserRoles()
+    .then(function (roles) {
+      expect(roles.owner).not.to.be.an('undefined');
+      expect(roles.tenant).to.be.an('undefined');
+      return roles.owner.load();
+    });
+    return expect(promise).to.eventually.be.fulfilled;
+  });
   it('should log users out', function () {
     auth.logout();
     expect(auth.isAuthenticated()).to.be.false;
+  });
+  it('should know unauthed users have no roles', function () {
+    var promise = auth.authedUserHasRole('owner');
+    return expect(promise).to.eventually.be.rejected;
+  });
+  it('should not load roles of unauthed users', function () {
+    var promise = auth.getAuthedUserRoles();
+    return expect(promise).to.eventually.be.rejected;
   });
   it('should let users reset passwords', function () {
     var promise = auth.resetPassword(email, password, newPassword)
