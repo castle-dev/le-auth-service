@@ -16,7 +16,22 @@ var mockProvider = {
   logout: function () { return true; },
   isAuthenticated: function () { return true; },
   requestPasswordReset: function () { return q.resolve(); },
-  resetPassword: function () { return q.resolve(); }
+  resetPassword: function () { return q.resolve(); },
+  getAuthedUser: function () {
+    return {
+      load: function () { return q.resolve(); }
+    }
+  },
+  getAuthedUserRoles: function () {
+    return q.resolve({
+      cat: { load: function () { return q.resolve(); } },
+      boat: { load: function () { return q.resolve(); } }
+    });
+  },
+  authedUserHasRole: function (role) {
+    if (role === 'cat' || role === 'boat') { return q.resolve(); }
+    else { return q.reject(); }
+  }
 }
 describe('AuthService', function () {
   var auth = new AuthService(mockProvider);
@@ -62,6 +77,27 @@ describe('AuthService', function () {
   it('should require password to login users in', function () {
     var promise = auth.loginWithEmail(email);
     return expect(promise).to.eventually.be.rejectedWith('Password required');
+  });
+  it('should load authenticated user record', function () {
+    var promise = auth.getAuthedUser().load();
+    return expect(promise).to.eventually.be.fulfilled;
+  });
+  it('should know the authed user has the cat role', function () {
+    var promise = auth.authedUserHasRole('cat');
+    return expect(promise).to.eventually.be.fulfilled;
+  });
+  it('should know the authed user does not have the dog role', function () {
+    var promise = auth.authedUserHasRole('dog');
+    return expect(promise).to.eventually.be.rejected;
+  });
+  it('should load authenticated user\'s role records', function () {
+    var promise = auth.getAuthedUserRoles()
+    .then(function (roles) {
+      expect(roles.cat).not.to.be.an('undefined');
+      expect(roles.dog).to.be.an('undefined');
+      return roles.cat.load();
+    });
+    return expect(promise).to.eventually.be.fulfilled;
   });
   it('should log users out', function () {
     var spy = sinon.spy(mockProvider, 'logout');

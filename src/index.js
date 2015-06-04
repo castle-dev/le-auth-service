@@ -96,6 +96,37 @@ var AuthService = function (provider) {
     if (!newPassword) { return q.reject(new Error('Password required')); }
     return _provider.resetPassword(email, resetToken, newPassword);
   };
+  /**
+   * Returns the authed user's record
+   * @function getAuthedUser
+   * @memberof AuthService
+   * @instance
+   * @returns {record} the authed user's record
+   */
+  this.getAuthedUser = function () {
+    return _provider.getAuthedUser();
+  };
+  /**
+   * Checks whether the current user have a given role
+   * @function authedUserHasRole
+   * @memberof AuthService
+   * @instance
+   * @param {string} role the role to check
+   * @returns {promise}
+   */
+  this.authedUserHasRole = function (role) {
+    return _provider.authedUserHasRole(role);
+  };
+  /**
+   * Returns a map of the authed user's role records
+   * @function getAuthedUserRoles
+   * @memberof AuthService
+   * @instance
+   * @returns {promise} resolves with a map of role records
+   */
+  this.getAuthedUserRoles = function () {
+    return _provider.getAuthedUserRoles();
+  };
 };
 
 module.exports = AuthService;
