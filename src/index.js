@@ -17,11 +17,11 @@ var AuthService = function (provider) {
    * @param {string} password the new user's password
    * @returns {promise} resolves with the newly created user record
    */
-  this.createUser = function (email, password, roles) {
+  this.createUser = function (email, password, roles, roleIDs) {
     if (!email) { return q.reject(new Error('Email required')); }
     if (!password) { return q.reject(new Error('Password required')); }
     if (!roles) { return q.reject(new Error('Roles array required')); }
-    return _provider.createUser(email, password, roles);
+    return _provider.createUser(email, password, roles, roleIDs);
   };
   /**
    * Logs a user in, given their email and password
