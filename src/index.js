@@ -5,8 +5,10 @@ var q = require('q');
  * @param {AuthProvider} provider the auth provider which this service delegates to
  * @returns {service}
  */
-var AuthService = function (provider) {
-  if (!provider) { throw new Error('Authentication provider required'); }
+var AuthService = function(provider) {
+  if (!provider) {
+    throw new Error('Authentication provider required');
+  }
   var _provider = provider;
   /**
    * Creates a new user
@@ -15,13 +17,23 @@ var AuthService = function (provider) {
    * @instance
    * @param {string} email the new user's email
    * @param {string} password the new user's password
+   * @param {string[]} roles an array of roles, supported values for the array are 'manager', 'tenant', 'owner', and 'contractor'
+   * @param {string[]} roleIDs (optional) the record IDs for the roles, the ids must be passed in the same order as the roles in the roles paramater
+   * @param {string} avatarImageID (optional) the id for the avatar image for the user
+   * @param {string} permissionID (optional) the id of the permission record for the user record
    * @returns {promise} resolves with the newly created user record
    */
-  this.createUser = function (email, password, roles, roleIDs) {
-    if (!email) { return q.reject(new Error('Email required')); }
-    if (!password) { return q.reject(new Error('Password required')); }
-    if (!roles) { return q.reject(new Error('Roles array required')); }
-    return _provider.createUser(email, password, roles, roleIDs);
+  this.createUser = function(email, password, roles, roleIDs, avatarImageID, permissionID) {
+    if (!email) {
+      return q.reject(new Error('Email required'));
+    }
+    if (!password) {
+      return q.reject(new Error('Password required'));
+    }
+    if (!roles) {
+      return q.reject(new Error('Roles array required'));
+    }
+    return _provider.createUser(email, password, roles, roleIDs, avatarImageID, permissionID);
   };
   /**
    * Logs a user in, given their email and password
@@ -32,9 +44,13 @@ var AuthService = function (provider) {
    * @param {string} password the user's password
    * @returns {promise} resolves with the user record
    */
-  this.loginWithEmail = function (email, password) {
-    if (!email) { return q.reject(new Error('Email required')); }
-    if (!password) { return q.reject(new Error('Password required')); }
+  this.loginWithEmail = function(email, password) {
+    if (!email) {
+      return q.reject(new Error('Email required'));
+    }
+    if (!password) {
+      return q.reject(new Error('Password required'));
+    }
     return _provider.loginWithEmail(email, password);
   };
   /**
@@ -45,8 +61,10 @@ var AuthService = function (provider) {
    * @param {string} token the user's access token (such as a secret key)
    * @returns {promise}
    */
-  this.loginWithToken = function (token) {
-    if (!token) { return q.reject(new Error('Token required')); }
+  this.loginWithToken = function(token) {
+    if (!token) {
+      return q.reject(new Error('Token required'));
+    }
     return _provider.loginWithToken(token);
   }
   /**
@@ -56,7 +74,7 @@ var AuthService = function (provider) {
    * @instance
    * @returns {boolean}
    */
-  this.isAuthenticated = function () {
+  this.isAuthenticated = function() {
     return _provider.isAuthenticated();
   };
   /**
@@ -65,7 +83,7 @@ var AuthService = function (provider) {
    * @memberof AuthService
    * @instance
    */
-  this.logout = function () {
+  this.logout = function() {
     return _provider.logout();
   };
   /**
@@ -76,8 +94,10 @@ var AuthService = function (provider) {
    * @param {string} email the user's email address
    * @returns {promise}
    */
-  this.requestPasswordReset = function (email) {
-    if (!email) { return q.reject(new Error('Email required')); }
+  this.requestPasswordReset = function(email) {
+    if (!email) {
+      return q.reject(new Error('Email required'));
+    }
     return _provider.requestPasswordReset(email);
   };
   /**
@@ -90,10 +110,16 @@ var AuthService = function (provider) {
    * @param {string} newPassword the user's new password
    * @returns {promise}
    */
-  this.resetPassword = function (email, resetToken, newPassword) {
-    if (!email) { return q.reject(new Error('Email required')); }
-    if (!resetToken) { return q.reject(new Error('Reset token required')); }
-    if (!newPassword) { return q.reject(new Error('Password required')); }
+  this.resetPassword = function(email, resetToken, newPassword) {
+    if (!email) {
+      return q.reject(new Error('Email required'));
+    }
+    if (!resetToken) {
+      return q.reject(new Error('Reset token required'));
+    }
+    if (!newPassword) {
+      return q.reject(new Error('Password required'));
+    }
     return _provider.resetPassword(email, resetToken, newPassword);
   };
   /**
@@ -103,7 +129,7 @@ var AuthService = function (provider) {
    * @instance
    * @returns {record} the authed user's record
    */
-  this.getAuthedUser = function () {
+  this.getAuthedUser = function() {
     return _provider.getAuthedUser();
   };
   /**
@@ -114,7 +140,7 @@ var AuthService = function (provider) {
    * @param {string} role the role to check
    * @returns {promise}
    */
-  this.authedUserHasRole = function (role) {
+  this.authedUserHasRole = function(role) {
     return _provider.authedUserHasRole(role);
   };
   /**
@@ -124,7 +150,7 @@ var AuthService = function (provider) {
    * @instance
    * @returns {promise} resolves with a map of role records
    */
-  this.getAuthedUserRoles = function () {
+  this.getAuthedUserRoles = function() {
     return _provider.getAuthedUserRoles();
   };
 };
