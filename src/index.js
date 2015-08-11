@@ -17,8 +17,8 @@ var AuthService = function(provider) {
    * @instance
    * @param {string} email the new user's email
    * @param {string} password the new user's password
-   * @param {array of strings} roles an array of roles, supported values for the array are 'manager', 'tenant', 'owner', and 'contractor'
-   * @param {array of strings} optional, roleIDs the record IDs for the roles, the ids must be passed in the same order as the roles in the roles paramater
+   * @param {string[]} roles an array of roles, supported values for the array are 'manager', 'tenant', 'owner', and 'contractor'
+   * @param {string[]} optional, roleIDs the record IDs for the roles, the ids must be passed in the same order as the roles in the roles paramater
    * @param {string} optional, avatarImageID the id for the avatar image for the user
    * @param {string} permissionID optional the id of the permission record for the user record
    * @returns {promise} resolves with the newly created user record
